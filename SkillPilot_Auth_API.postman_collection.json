@@ -1,0 +1,666 @@
+{
+	"info": {
+		"name": "SkillPilot API",
+		"description": "Postman collection for testing SkillPilot authentication, Course Management, and Stripe Payments APIs.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "1. Register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/register/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"register",
+								""
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"johndoe\",\n    \"email\": \"johndoe@example.com\",\n    \"password\": \"SecurePassword123!\",\n    \"confirm_password\": \"SecurePassword123!\",\n    \"first_name\": \"John\",\n    \"last_name\": \"Doe\",\n    \"phone_number\": \"+1234567890\",\n    \"address\": \"123 Main Street\",\n    \"role\": \"mentor\",\n    \"bio\": \"Experienced Web Development Mentor.\"\n}"
+						}
+					}
+				},
+				{
+					"name": "2. Verify OTP",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/verify-otp/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"verify-otp",
+								""
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"johndoe@example.com\",\n    \"otp\": \"123456\",\n    \"purpose\": \"registration\"\n}"
+						}
+					}
+				},
+				{
+					"name": "3. Resend OTP",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/resend-otp/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"resend-otp",
+								""
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"johndoe@example.com\",\n    \"purpose\": \"registration\"\n}"
+						}
+					}
+				},
+				{
+					"name": "4. Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.tokens && jsonData.tokens.access) {",
+									"    pm.collectionVariables.set('access_token', jsonData.tokens.access);",
+									"    pm.collectionVariables.set('refresh_token', jsonData.tokens.refresh);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/login/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"login",
+								""
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"johndoe@example.com\",\n    \"password\": \"SecurePassword123!\"\n}"
+						}
+					}
+				},
+				{
+					"name": "5. Get User Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/profile/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"profile",
+								""
+							]
+						}
+					}
+				},
+				{
+					"name": "6. Change Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/change-password/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"change-password",
+								""
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"old_password\": \"SecurePassword123!\",\n    \"new_password\": \"BrandNewPassword123!\",\n    \"confirm_password\": \"BrandNewPassword123!\"\n}"
+						}
+					}
+				},
+				{
+					"name": "7. Forgot Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/forgot-password/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"forgot-password",
+								""
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"johndoe@example.com\"\n}"
+						}
+					}
+				},
+				{
+					"name": "8. Reset Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/reset-password/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"reset-password",
+								""
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"johndoe@example.com\",\n    \"otp\": \"654321\",\n    \"new_password\": \"BrandNewPassword123!\",\n    \"confirm_password\": \"BrandNewPassword123!\"\n}"
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Courses",
+			"item": [
+				{
+					"name": "1. List Categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/categories/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"categories",
+								""
+							]
+						}
+					}
+				},
+				{
+					"name": "2. Create Category (Mentor/Admin)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/categories/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"categories",
+								""
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Web Development\",\n    \"description\": \"Learn frontend, backend, and full stack development.\"\n}"
+						}
+					}
+				},
+				{
+					"name": "3. List All Courses",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/courses/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"courses",
+								""
+							]
+						}
+					}
+				},
+				{
+					"name": "4. Create Course (Mentor)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/courses/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"courses",
+								""
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Full Stack Django & React\",\n    \"description\": \"Complete step-by-step masterclass building real-world web applications.\",\n    \"category\": 1,\n    \"price\": \"49.99\",\n    \"level\": \"beginner\",\n    \"is_published\": true\n}"
+						}
+					}
+				},
+				{
+					"name": "5. Course Detail",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/courses/full-stack-django-react/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"courses",
+								"full-stack-django-react",
+								""
+							]
+						}
+					}
+				},
+				{
+					"name": "6. Direct Enroll (Legacy/Free)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/courses/full-stack-django-react/enroll/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"courses",
+								"full-stack-django-react",
+								"enroll",
+								""
+							]
+						}
+					}
+				},
+				{
+					"name": "7. My Courses (Enrolled or Created)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/courses/my_courses/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"courses",
+								"my_courses",
+								""
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Payments & Stripe",
+			"item": [
+				{
+					"name": "1. Create Stripe Checkout Session",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/payments/create-checkout-session/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"payments",
+								"create-checkout-session",
+								""
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"course_id\": 1\n}"
+						}
+					}
+				},
+				{
+					"name": "2. Stripe Webhook Listener",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/payments/webhook/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"payments",
+								"webhook",
+								""
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"checkout.session.completed\",\n    \"data\": {\n        \"object\": {\n            \"id\": \"cs_test_session_12345\",\n            \"payment_intent\": \"pi_test_intent_12345\",\n            \"metadata\": {\n                \"course_id\": \"1\",\n                \"user_id\": \"1\"\n            }\n        }\n    }\n}"
+						}
+					}
+				},
+				{
+					"name": "3. Create Stripe Checkout Session (by Course ID URL)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/payments/create-checkout-session/1/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"payments",
+								"create-checkout-session",
+								"1",
+								""
+							]
+						}
+					}
+				},
+				{
+					"name": "4. Customer Payment History",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/payments/history/customer/?status=completed&min_amount=10.00&max_amount=100.00",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"payments",
+								"history",
+								"customer",
+								""
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "completed"
+								},
+								{
+									"key": "min_amount",
+									"value": "10.00"
+								},
+								{
+									"key": "max_amount",
+									"value": "100.00"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "5. Mentor Earnings History",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/payments/history/mentor/?status=completed&min_amount=10.00&max_amount=100.00",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"payments",
+								"history",
+								"mentor",
+								""
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "completed"
+								},
+								{
+									"key": "min_amount",
+									"value": "10.00"
+								},
+								{
+									"key": "max_amount",
+									"value": "100.00"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Chat & AI Advisor",
+			"item": [
+				{
+					"name": "1. AI Course Recommendation (Gemini API)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/chat/recommend/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"chat",
+								"recommend",
+								""
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"message\": \"I know Python and basic HTML. My goal is to become a Backend Developer. What courses do you suggest?\"\n}"
+						}
+					}
+				},
+				{
+					"name": "2. User AI Chat History",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/chat/history/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"chat",
+								"history",
+								""
+							]
+						}
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://127.0.0.1:8000",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "refresh_token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
