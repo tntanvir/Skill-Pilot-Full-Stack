@@ -116,6 +116,7 @@ export default function RegisterPage() {
                 <PhoneInputComponent 
                   value={formData.phone_number} 
                   onChange={(phone) => setFormData({ ...formData, phone_number: phone })} 
+                  required={true}
                 />
               </div>
 
